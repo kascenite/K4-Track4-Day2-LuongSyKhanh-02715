@@ -1,0 +1,6 @@
+exp_id=B01 backbone=resnet50 desc=resnet50
+exp_id=B02 backbone=resnext50_32x4d desc=resnext50
+exp_id=B03 backbone=convnext_tiny desc=convnext_tiny
+exp_id=B04 backbone=deit_small_patch16_224 desc=deit_small
+exp_id=B05 backbone=efficientnet_b0 desc=efficientnet_b0
+exp_id=B06 backbone=mobilenetv3_large_100 desc=mobilenetv3
