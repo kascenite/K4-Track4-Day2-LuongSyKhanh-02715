@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import glob
 import json
+import sys
 from pathlib import Path
 
 import matplotlib
@@ -24,10 +25,16 @@ import torchvision.transforms as T
 import torchvision.transforms.functional as TF
 from PIL import Image
 
-import dataset
-import inference as I
-import model as M
-from eval import compute_metrics, confusion_matrix, read_pred
+HERE = Path(__file__).resolve().parent
+for _p in (HERE, HERE.parent, HERE.parent.parent, HERE.parent.parent.parent):   # tìm eval.py của repo gốc
+    if (_p / "eval.py").exists():
+        sys.path.insert(0, str(_p))
+        break
+
+import dataset  # noqa: E402
+import inference as I  # noqa: E402
+import model as M  # noqa: E402
+from eval import compute_metrics, confusion_matrix, read_pred  # noqa: E402
 
 NAMES = ["Chinee apple", "Lantana", "Parkinsonia", "Parthenium", "Prickly acacia", "Rubber vine", "Siam weed", "Snake weed", "Negative"]
 

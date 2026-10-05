@@ -1,0 +1,23 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+n: {'train': 10501, 'val': 3501, 'test': 3507} | tổng: 17509
+tỉ lệ: {'train': 0.5997, 'val': 0.2, 'test': 0.2003}
+per_class:
+                train   val  test
+Chinee Apple      675   225   226
+Lantana           637   213   213
+Parkinsonia       618   206   207
+Parthenium        613   204   205
+Prickly Acacia    637   212   213
+Rubber Vine       605   202   202
+Siam Weed         644   215   215
+Snake Weed        609   203   204
+Negatives        5463  1821  1822
+overlap: {'train&val': 0, 'train&test': 0, 'val&test': 0} | union: 17509 | thiếu file: 0
+loss khởi tạo = 2.177 (kỳ vọng ~2.197)
+|focal(γ=0) - CE| = 2.38e-07; |LS(ε=0) - CE| = 2.38e-07
+loss sau 60 bước trên 16 ảnh = 0.0047 (kỳ vọng < 0.05)
+cutmix lam = 0.590
+T = 23.406370242851466
+fuse_conv_bn: 53 cặp, sai số lớn nhất = 5.05e-05
+params 23.526473 GMAC 4.087154688
+SMOKE OK

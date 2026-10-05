@@ -1,0 +1,2 @@
+F01 seed1: method=res256/prob T=1.424 -> /kaggle/working/out/predictions/F01_seed1_test.csv
+F01 seed2: method=res256/prob T=1.428 -> /kaggle/working/out/predictions/F01_seed2_test.csv

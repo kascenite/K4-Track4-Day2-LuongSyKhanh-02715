@@ -1,0 +1,19 @@
+test_aggregate_views_probs_sum_to_one (test_components.TestInference.test_aggregate_views_probs_sum_to_one) ... ok
+test_fuse_conv_bn_matches_original (test_components.TestInference.test_fuse_conv_bn_matches_original) ... ok
+test_temperature_reduces_nll_and_keeps_argmax (test_components.TestInference.test_temperature_reduces_nll_and_keeps_argmax) ... ok
+test_class_weights (test_components.TestLosses.test_class_weights) ... ok
+test_cutmix_lambda_is_true_area_and_labels_mixed (test_components.TestLosses.test_cutmix_lambda_is_true_area_and_labels_mixed) ... ok
+test_focal_downweights_easy (test_components.TestLosses.test_focal_downweights_easy) ... ok
+test_focal_gamma0_equals_ce (test_components.TestLosses.test_focal_gamma0_equals_ce) ... ok
+test_label_smoothing_eps0_equals_ce_and_matches_torch (test_components.TestLosses.test_label_smoothing_eps0_equals_ce_and_matches_torch) ... ok
+test_mixed_loss_is_convex_combo (test_components.TestLosses.test_mixed_loss_is_convex_combo) ... ok
+test_freeze_backbone_trains_only_head (test_components.TestModel.test_freeze_backbone_trains_only_head) ... ok
+test_param_groups_no_wd_on_norm_bias_and_head_lr (test_components.TestModel.test_param_groups_no_wd_on_norm_bias_and_head_lr) ... ok
+test_ema_update_formula (test_components.TestTrain.test_ema_update_formula) ... ok
+test_parse_overrides_types (test_components.TestTrain.test_parse_overrides_types) ... ok
+test_scheduler_warmup_then_cosine_to_zero (test_components.TestTrain.test_scheduler_warmup_then_cosine_to_zero) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 1.161s
+
+OK

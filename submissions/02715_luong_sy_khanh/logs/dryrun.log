@@ -1,0 +1,1 @@
+[dry_run] T03 seed0 method=flip/prob T=1.597 val F1=0.9715 acc=0.9789 ECE=0.0075

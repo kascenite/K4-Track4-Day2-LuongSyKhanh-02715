@@ -1,0 +1,34 @@
+I00 1 view (center crop 224): F1=0.9700 acc=0.9780 ECE=0.0127 p50=5.50ms
+I01 TTA flip K=2 (gộp prob): F1=0.9715 acc=0.9789 ECE=0.0107 p50=11.37ms
+I03a TTA flip K=2 (gộp logit): F1=0.9715 acc=0.9789 ECE=0.0124 p50=11.37ms
+I02a TTA 5crop K=5 (gộp prob): F1=0.9709 acc=0.9786 ECE=0.0105 p50=27.59ms
+I02a-logit TTA 5crop K=5 (gộp logit): F1=0.9706 acc=0.9783 ECE=0.0127 p50=27.59ms
+I02b TTA 5crop+flip K=10 (gộp prob): F1=0.9740 acc=0.9809 ECE=0.0074 p50=55.11ms
+I02b-logit TTA 5crop+flip K=10 (gộp logit): F1=0.9740 acc=0.9809 ECE=0.0113 p50=55.11ms
+I04-256 Độ phân giải kiểm tra 256 (resize toàn ảnh): F1=0.9744 acc=0.9809 ECE=0.0107 p50=6.25ms
+I04-288 Độ phân giải kiểm tra 288 (resize toàn ảnh): F1=0.9735 acc=0.9797 ECE=0.0110 p50=7.68ms
+I04-320 Độ phân giải kiểm tra 320 (resize toàn ảnh): F1=0.9727 acc=0.9786 ECE=0.0104 p50=9.43ms
+I05 Ensemble T03+T02+T05 (TB xác suất): F1=0.9738 acc=0.9809 ECE=0.0286 p50=16.77ms
+I07 Temperature scaling T=1.666 (khớp trên val): F1=0.9700 acc=0.9780 ECE=0.0037 p50=5.50ms
+I07-cv {'exp_id': 'I07-cv', 'method': 'Temperature scaling, 2-fold trên val', 'model': 'T03', 'K': 1, 'val_ece': 0.0064880055649305475, 'note': 'ECE trước=0.0137, T các fold=[1.62, 1.709]'}
+I08-fp32 FP32 thuần (không autocast): F1=0.9700 acc=0.9780 ECE=0.0127 p50=5.50ms
+I08-amp AMP (autocast fp16): F1=0.9700 acc=0.9780 ECE=0.0127 p50=7.67ms
+I08-fp16 FP16 (model.half()): F1=0.9700 acc=0.9780 ECE=0.0127 p50=5.58ms
+I08-fuse: không có cặp Conv-BN (mạng dùng LayerNorm) -> không áp dụng
+        exp_id                                       method model   K  val_macro_f1  val_top1   val_ece     p50_ms     p95_ms     p99_ms                                                           note  cost_vs_I00
+0          I00                     1 view (center crop 224)   T03   1      0.969953  0.978006  0.012703   5.496728   9.157524   9.173682                                                                    1.000000
+1          I01                      TTA flip K=2 (gộp prob)   T03   2      0.971476  0.978863  0.010689  11.372192  11.886640  12.716722                                                                    2.068902
+2         I03a                     TTA flip K=2 (gộp logit)   T03   2      0.971476  0.978863  0.012353  11.372192  11.886640  12.716722                                                                    2.068902
+3         I02a                     TTA 5crop K=5 (gộp prob)   T03   5      0.970942  0.978578  0.010498  27.592312  29.886292  38.910374                                                                    5.019770
+4   I02a-logit                    TTA 5crop K=5 (gộp logit)   T03   5      0.970644  0.978292  0.012744  27.592312  29.886292  38.910374                                                                    5.019770
+5         I02b               TTA 5crop+flip K=10 (gộp prob)   T03  10      0.973997  0.980863  0.007384  55.112017  56.882768  59.161100                                                                   10.026331
+6   I02b-logit              TTA 5crop+flip K=10 (gộp logit)   T03  10      0.973997  0.980863  0.011300  55.112017  56.882768  59.161100                                                                   10.026331
+7      I04-256  Độ phân giải kiểm tra 256 (resize toàn ảnh)   T03   1      0.974378  0.980863  0.010709   6.246107  10.142713  10.173926                                                                    1.136332
+8      I04-288  Độ phân giải kiểm tra 288 (resize toàn ảnh)   T03   1      0.973540  0.979720  0.011035   7.676749  12.446614  12.474686                                                                    1.396603
+9      I04-320  Độ phân giải kiểm tra 320 (resize toàn ảnh)   T03   1      0.972710  0.978578  0.010431   9.427979   9.676131  14.552246                                                                    1.715198
+10         I05           Ensemble T03+T02+T05 (TB xác suất)   T03   3      0.973784  0.980863  0.028644  16.769850  18.142224  19.189477                              độ trễ = tổng độ trễ từng mô hình     3.050879
+11         I07  Temperature scaling T=1.666 (khớp trên val)   T03   1      0.969953  0.978006  0.003726   5.496728   9.157524   9.173682  in-sample trên val; xem I07-cv cho ước lượng không thiên lệch     1.000000
+12      I07-cv         Temperature scaling, 2-fold trên val   T03   1           NaN       NaN  0.006488        NaN        NaN        NaN                     ECE trước=0.0137, T các fold=[1.62, 1.709]          NaN
+13    I08-fp32                  FP32 thuần (không autocast)   T03   1      0.969953  0.978006  0.012700   5.496728   9.157524   9.173682                                                                    1.000000
+14     I08-amp                          AMP (autocast fp16)   T03   1      0.969953  0.978006  0.012703   7.673869   8.179181   8.386758                                                                    1.396080
+15    I08-fp16                          FP16 (model.half())   T03   1      0.969953  0.978006  0.012706   5.581468   6.019579   6.220713                                                                    1.015416

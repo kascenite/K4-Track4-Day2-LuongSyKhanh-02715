@@ -1,0 +1,33 @@
+SKIP B01 seed0 (đã xong)
+SKIP B02 seed0 (đã xong)
+SKIP B03 seed0 (đã xong)
+SKIP B04 seed0 (đã xong)
+SKIP B05 seed0 (đã xong)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+n: {'train': 10501, 'val': 3501, 'test': 3507} | tổng: 17509
+tỉ lệ: {'train': 0.5997, 'val': 0.2, 'test': 0.2003}
+per_class:
+                train   val  test
+Chinee Apple      675   225   226
+Lantana           637   213   213
+Parkinsonia       618   206   207
+Parthenium        613   204   205
+Prickly Acacia    637   212   213
+Rubber Vine       605   202   202
+Siam Weed         644   215   215
+Snake Weed        609   203   204
+Negatives        5463  1821  1822
+overlap: {'train&val': 0, 'train&test': 0, 'val&test': 0} | union: 17509 | thiếu file: 0
+[B06 s0] ep1 train_loss=1.8161 val_loss=1.4069 F1=0.3639 acc=0.5553 t=64s
+[B06 s0] ep2 train_loss=0.7220 val_loss=1.0068 F1=0.5276 acc=0.6764 t=36s
+[B06 s0] ep3 train_loss=0.4933 val_loss=0.9194 F1=0.5648 acc=0.6987 t=37s
+[B06 s0] ep4 train_loss=0.3769 val_loss=0.8502 F1=0.6173 acc=0.7261 t=37s
+[B06 s0] ep5 train_loss=0.3180 val_loss=0.7937 F1=0.6204 acc=0.7406 t=36s
+[B06 s0] ep6 train_loss=0.2691 val_loss=0.7567 F1=0.6360 acc=0.7444 t=38s
+[B06 s0] ep7 train_loss=0.2481 val_loss=0.6879 F1=0.6805 acc=0.7746 t=36s
+[B06 s0] ep8 train_loss=0.2255 val_loss=0.6847 F1=0.6886 acc=0.7783 t=38s
+[B06 s0] ep9 train_loss=0.1947 val_loss=0.6423 F1=0.7136 acc=0.7895 t=37s
+[B06 s0] ep10 train_loss=0.1865 val_loss=0.6129 F1=0.7260 acc=0.7966 t=37s
+[B06 s0] ep11 train_loss=0.1820 val_loss=0.6501 F1=0.7060 acc=0.7861 t=38s
+[B06 s0] ep12 train_loss=0.1805 val_loss=0.6753 F1=0.6978 acc=0.7818 t=36s
+DONE B06 seed0 F1=0.7260

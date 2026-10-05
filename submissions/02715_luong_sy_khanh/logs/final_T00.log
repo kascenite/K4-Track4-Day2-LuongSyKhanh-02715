@@ -1,0 +1,3 @@
+T00 seed0: method=1view/prob T=1.000 -> /kaggle/working/out/predictions/T00_seed0_test.csv
+T00 seed1: method=1view/prob T=1.000 -> /kaggle/working/out/predictions/T00_seed1_test.csv
+T00 seed2: method=1view/prob T=1.000 -> /kaggle/working/out/predictions/T00_seed2_test.csv

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import sys
+from pathlib import Path
 
 import numpy as np
 import timm
@@ -15,8 +16,14 @@ import torch
 from sklearn.linear_model import LogisticRegression
 from torch.utils.data import DataLoader
 
-import dataset
-from eval import compute_metrics
+HERE = Path(__file__).resolve().parent
+for _p in (HERE, HERE.parent, HERE.parent.parent, HERE.parent.parent.parent):   # tìm eval.py của repo gốc
+    if (_p / "eval.py").exists():
+        sys.path.insert(0, str(_p))
+        break
+
+import dataset  # noqa: E402
+from eval import compute_metrics  # noqa: E402
 
 
 @torch.inference_mode()
