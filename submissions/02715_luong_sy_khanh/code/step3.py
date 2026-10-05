@@ -160,9 +160,12 @@ def main():
             with torch.inference_mode():
                 x0 = torch.randn(4, 3, 224, 224, device=dev)
                 err = (fused(x0) - net(x0)).abs().max().item()
-            _, _, (lfu,) = I.predict_views(fused, loader, dev, lambda x: [c224(x)], amp=False)
-            add("I08-fuse", f"Gộp BN vào conv ({fused.n_fused} cặp, sai số {err:.1e})", I.aggregate_views([lfu], "prob"), 1, y,
-                lat(fused, 224, "fp32", "I08 fused-BN fp32 224", fused=True))
+            if fused.n_fused == 0:
+                print("I08-fuse: không có cặp Conv-BN (mạng dùng LayerNorm) -> không áp dụng", flush=True)
+            else:
+                _, _, (lfu,) = I.predict_views(fused, loader, dev, lambda x: [c224(x)], amp=False)
+                add("I08-fuse", f"Gộp BN vào conv ({fused.n_fused} cặp, sai số {err:.1e})", I.aggregate_views([lfu], "prob"), 1, y,
+                    lat(fused, 224, "fp32", "I08 fused-BN fp32 224", fused=True))
         except Exception as e:  # noqa: BLE001
             print("fuse_conv_bn lỗi:", repr(e), flush=True)
 

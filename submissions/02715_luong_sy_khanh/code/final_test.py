@@ -57,6 +57,7 @@ def main():
     ap.add_argument("--space", default="prob")
     ap.add_argument("--temp", type=int, default=0)
     ap.add_argument("--force", action="store_true")
+    ap.add_argument("--dry_run", action="store_true", help="chỉ chạy VAL để kiểm tra code, KHÔNG đọc test và không ghi file")
     ap.add_argument("--common", nargs="*", default=[])
     a = ap.parse_args()
 
@@ -66,7 +67,7 @@ def main():
     for seed in a.seeds:
         cfg = train.Config(**{**base, "exp_id": a.name, "seed": seed})
         tp = train.pred_path(cfg, "test")
-        if tp.exists() and not a.force:
+        if tp.exists() and not a.force and not a.dry_run:
             raise SystemExit(f"{tp} đã tồn tại: test đã được mở cho {a.name} seed{seed}. Không chạy lại (dùng --force nếu thật sự cần).")
         tcfg = train.Config(**{**base, "exp_id": a.train_exp, "seed": seed})
         rd = train.run_dir(tcfg)
@@ -84,6 +85,11 @@ def main():
         T = I.fit_temperature(zv, vy) if a.temp else 1.0
         pv = I.apply_temperature(zv, T)
 
+        if a.dry_run:
+            from eval import compute_metrics
+            m = compute_metrics(vy, pv.argmax(1), pv)
+            print(f"[dry_run] {a.train_exp} seed{seed} method={a.method}/{a.space} T={T:.3f} val F1={m['macro_f1']:.4f} acc={m['top1']:.4f} ECE={m['ece']:.4f}", flush=True)
+            continue
         tn, ty, TL = I.predict_views(net, dataset.make_loader(test_df, cfg.images_dir, tf, 128, False, None, 2, True), dev, fn)
         zt = to_z(TL, a.space)
         pt, pt_uncal = I.apply_temperature(zt, T), I.apply_temperature(zt, 1.0)
