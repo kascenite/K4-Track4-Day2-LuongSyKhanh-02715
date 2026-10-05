@@ -92,15 +92,26 @@ def build(a):
     base_rows = [r for r in runs if r["exp_id"] == a.baseline]
     base_cfg = base_rows[0]["cfg"] if base_rows else {}
     base0 = next((r for r in base_rows if r["seed"] == 0), None)
+    bvals = [r["val_macro_f1"] for r in base_rows]
+    bmean = float(np.mean(bvals)) if bvals else None
+    bstd = float(np.std(bvals, ddof=1)) if len(bvals) > 1 else None
     rows = []
-    for r in by("T"):
+    for r in [x for x in by("T") if x["exp_id"] != a.baseline]:
         d, ax = diff_vs(r["cfg"], base_cfg) if base_cfg else ("?", [])
         f = r["val_f1_per_class"]
         rows.append({"exp_id": r["exp_id"], "backbone": r["backbone"], "trục thay đổi": "; ".join(ax), "khác T00 ở điểm nào": d,
                      "seed": r["seed"], "macro-F1 val": r["val_macro_f1"], "top-1 val": r["val_top1"],
-                     "Δ macro-F1 so với T00 (seed 0)": r["val_macro_f1"] - base0["val_macro_f1"] if base0 else None,
+                     "Δ macro-F1 so với mean T00": r["val_macro_f1"] - bmean if bmean is not None else None,
+                     "Δ/σ (σ = std T00 qua seed)": (r["val_macro_f1"] - bmean) / bstd if bstd else None,
                      "F1 val Chinee apple": f[0], "F1 val Snake weed": f[7], "ECE val": r["val_ece"],
                      "ghi chú": "1 seed" if r["seed"] is not None else ""})
+    if bmean is not None:                                   # dòng nền: mean ± std qua seed của T00
+        rows.insert(0, {"exp_id": a.baseline, "backbone": base_rows[0]["backbone"], "trục thay đổi": "(nền)",
+                        "khác T00 ở điểm nào": f"mean ± std qua {len(bvals)} seed",
+                        "seed": ",".join(str(r["seed"]) for r in sorted(base_rows, key=lambda x: x["seed"])),
+                        "macro-F1 val": bmean, "top-1 val": float(np.mean([r["val_top1"] for r in base_rows])),
+                        "Δ macro-F1 so với mean T00": 0.0, "Δ/σ (σ = std T00 qua seed)": 0.0,
+                        "ghi chú": f"std = {bstd:.4f}" if bstd else ""})
     sheets["Training"] = pd.DataFrame(rows)
 
     # --- Inference (step3) ---
@@ -109,7 +120,13 @@ def build(a):
         inf.append(pd.read_csv(p))
     for p in sorted(glob.glob(f"{root}/runs/step3_*/latency.csv")):
         latr.append(pd.read_csv(p))
-    sheets["Inference"] = pd.concat(inf, ignore_index=True) if inf else pd.DataFrame()
+    infdf = pd.concat(inf, ignore_index=True) if inf else pd.DataFrame()
+    if len(infdf):
+        infdf = infdf.rename(columns={"method": "phương pháp", "model": "mô hình/checkpoint", "val_macro_f1": "macro-F1 val",
+                                      "val_top1": "top-1 val", "val_ece": "ECE val", "p50_ms": "p50 batch-1 (ms)",
+                                      "p95_ms": "p95 batch-1 (ms)", "p99_ms": "p99 batch-1 (ms)",
+                                      "cost_vs_I00": "chi phí tương đối so với I00", "note": "ghi chú"})
+    sheets["Inference"] = infdf
     lat_all = ([lat.assign(config=lat.backbone + " (kiến trúc)")] if lat is not None else []) + latr
     lt = pd.concat(lat_all, ignore_index=True) if lat_all else pd.DataFrame()
     if len(lt):
@@ -133,6 +150,7 @@ def build(a):
             ms.append(mt)
             vs.append(mv)
             final_rows.append({"exp_id": name, "cấu hình": "mốc T00 + I00" if name == a.baseline else "chung kết", "seed": s,
+                               "ghi chú": a.final_note if name == a.final and s == 0 else "",
                                "macro-F1 val": mv["macro_f1"] if mv else None, "macro-F1 test": mt["macro_f1"],
                                "top-1 test": mt["top1"], "balanced acc test": mt["balanced_acc"], "ECE test": mt["ece"],
                                "recall Chinee apple (test)": mt["recall"][0], "recall Snake weed (test)": mt["recall"][7]})
@@ -161,7 +179,14 @@ def build(a):
             sm.append({"exp_id": r["exp_id"], "nhóm": "backbone" if r["exp_id"][0] == "B" else "huấn luyện", "backbone": r["backbone"],
                        "macro-F1 val": r["val_macro_f1"], "top-1 val": r["val_top1"], "#tham số (M)": r["params_m"], "GMAC": r["gmac"],
                        "ghi chú": diff_vs(r["cfg"], base_cfg)[0] if r["exp_id"][0] == "T" and base_cfg else ""})
-    s = pd.DataFrame(sm).sort_values("macro-F1 val", ascending=False).head(10) if sm else pd.DataFrame()
+    for nm, lab in ((a.baseline, "NỀN T00 (mean 3 seed)"), (a.final, "CHUNG KẾT (mean các seed, train-val 1-view)")):
+        rr = [r for r in runs if r["exp_id"] == nm or (nm == a.final and (r["exp_id"] == "T03" and r["seed"] == 0))]
+        if rr:
+            sm.append({"exp_id": lab, "nhóm": "tổng hợp", "backbone": rr[0]["backbone"],
+                       "macro-F1 val": float(np.mean([r["val_macro_f1"] for r in rr])),
+                       "top-1 val": float(np.mean([r["val_top1"] for r in rr])), "#tham số (M)": rr[0]["params_m"],
+                       "GMAC": rr[0]["gmac"], "ghi chú": f"{len(rr)} seed"})
+    s = pd.DataFrame(sm).sort_values("macro-F1 val", ascending=False).head(12) if sm else pd.DataFrame()
     sheets["Summary"] = s
     return sheets, M
 
@@ -198,6 +223,7 @@ def main():
     ap.add_argument("--final", default="F01")
     ap.add_argument("--baseline", default="T00")
     ap.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
+    ap.add_argument("--final-note", dest="final_note", default="seed 0 dùng checkpoint của lần chạy T03 seed 0 (cùng công thức)")
     a = ap.parse_args()
     sheets, _ = build(a)
     write(sheets, a.out)
